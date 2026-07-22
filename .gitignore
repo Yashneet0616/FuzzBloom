@@ -1,0 +1,57 @@
+# Dependencies
+**/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+*.local
+
+# Build
+dist/
+build/
+coverage/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Firebase Admin Keys
+serviceAccountKey.json
+firebase-adminsdk*.json
+# Dependencies
+**/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Firebase Admin key
+firebase-service-account.json
+**/firebase-service-account.json
+
+# Build folders
+dist/
+build/
+coverage/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
