@@ -1,17 +1,21 @@
-import Hero from '../../components/customer/home/Hero'
-import Categories from '../../components/customer/home/Categories'
-import FeaturedProducts from '../../components/customer/home/FeaturedProducts'
-import WhyChooseUs from '../../components/customer/home/WhyChooseUs'
+import HeroSection from "../../components/home/HeroSection";
+import CategoriesSection from "../../components/home/CategoriesSection";
+import BestSellerSection from "../../components/home/BestSellerSection";
+import InstagramSection from "../../components/home/InstagramSection";
+import CTASection from "../../components/home/CTASection";
+import Footer from "../../components/shared/layout/Footer";
 
-function Home() {
+const Home = () => {
   return (
     <>
-      <Hero />
-      <Categories />
-      <FeaturedProducts />
-      <WhyChooseUs />
+      <HeroSection />
+      <CategoriesSection />
+      <BestSellerSection />
+      <InstagramSection />
+      <CTASection />
+      <Footer />
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
