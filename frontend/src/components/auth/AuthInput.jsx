@@ -14,63 +14,40 @@ function AuthInput({
   const isPassword = type === "password";
 
   return (
-    <div className="space-y-2">
-
-      <label className="block text-sm font-medium text-[#5B5551]">
-        {label}
-      </label>
+    <div className="space-y-1">
+      {label && (
+        <label className="block text-xs font-semibold text-gray-800">
+          {label}
+        </label>
+      )}
 
       <div
-        className={`group flex h-14 items-center rounded-2xl border bg-white px-5 transition-all duration-300 ${
-          error
-            ? "border-red-300"
-            : "border-[#F1D8DD] hover:border-[#FF9DB3] focus-within:border-[#FF6F91] focus-within:shadow-[0_0_0_4px_rgba(255,111,145,.10)]"
+        className={`flex h-11 items-center rounded-2xl border bg-[#FAFAFA] px-3.5 transition-all duration-200 focus-within:bg-white focus-within:ring-2 focus-within:ring-purple-200 ${
+          error ? "border-red-300" : "border-gray-200 focus-within:border-purple-400"
         }`}
       >
-        {Icon && (
-          <Icon
-            size={18}
-            className="mr-3 text-[#FF8AA8]"
-          />
-        )}
+        {Icon && <Icon size={16} className="mr-2.5 shrink-0 text-gray-400" />}
 
         <input
           {...register}
           {...props}
-          type={
-            isPassword
-              ? showPassword
-                ? "text"
-                : "password"
-              : type
-          }
+          type={isPassword ? (showPassword ? "text" : "password") : type}
           placeholder={placeholder}
-          className="flex-1 bg-transparent text-[15px] text-[#3E3E3E] placeholder:text-[#B4A6AB] outline-none"
+          className="h-full w-full bg-transparent text-xs text-gray-800 outline-none placeholder:text-gray-400 sm:text-sm"
         />
 
         {isPassword && (
           <button
             type="button"
-            onClick={() =>
-              setShowPassword(!showPassword)
-            }
-            className="text-[#A08B93] transition hover:text-[#FF6F91]"
+            onClick={() => setShowPassword(!showPassword)}
+            className="ml-2 shrink-0 text-gray-400 transition hover:text-gray-600"
           >
-            {showPassword ? (
-              <EyeOff size={20} />
-            ) : (
-              <Eye size={20} />
-            )}
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         )}
       </div>
 
-      {error && (
-        <p className="text-sm text-red-500">
-          {error}
-        </p>
-      )}
-
+      {error && <p className="text-[11px] text-red-500">{error}</p>}
     </div>
   );
 }

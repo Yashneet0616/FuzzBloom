@@ -1,103 +1,39 @@
-import {
-  CheckCircle2,
-  Circle,
-} from "lucide-react";
+import { CheckCircle2, Circle } from "lucide-react";
 
 function PasswordStrength({ password = "" }) {
   const rules = [
-    {
-      label: "At least 8 characters",
-      valid: password.length >= 8,
-    },
-    {
-      label: "One uppercase letter",
-      valid: /[A-Z]/.test(password),
-    },
-    {
-      label: "One lowercase letter",
-      valid: /[a-z]/.test(password),
-    },
-    {
-      label: "One number",
-      valid: /\d/.test(password),
-    },
-    {
-      label: "One special character",
-      valid: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    },
+    { label: "8+ chars", valid: password.length >= 8 },
+    { label: "Uppercase", valid: /[A-Z]/.test(password) },
+    { label: "Lowercase", valid: /[a-z]/.test(password) },
+    { label: "Number", valid: /\d/.test(password) },
+    { label: "Special char", valid: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
   ];
 
-  const passed = rules.filter((rule) => rule.valid).length;
-
-  const getStrength = () => {
-    if (password.length === 0)
-      return {
-        text: "",
-        color: "",
-      };
-
-    if (passed <= 2)
-      return {
-        text: "Weak",
-        color: "text-red-500",
-      };
-
-    if (passed === 3 || passed === 4)
-      return {
-        text: "Medium",
-        color: "text-yellow-500",
-      };
-
-    return {
-      text: "Strong",
-      color: "text-green-600",
-    };
-  };
-
-  const strength = getStrength();
+  const passed = rules.filter((r) => r.valid).length;
+  const strength = 
+    password.length === 0 ? { text: "", color: "" } :
+    passed <= 2 ? { text: "Weak", color: "text-red-400" } :
+    passed <= 4 ? { text: "Medium", color: "text-amber-500" } : 
+    { text: "Strong", color: "text-purple-600" };
 
   return (
-    <div className="mt-4 rounded-2xl bg-rose-50 p-4">
-
+    <div className="mt-2 rounded-2xl bg-[#F7F2FA] p-2.5">
       {strength.text && (
-        <div className="mb-3 flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">
-            Password Strength
-          </span>
-
-          <span
-            className={`text-sm font-semibold ${strength.color}`}
-          >
-            {strength.text}
-          </span>
+        <div className="mb-1.5 flex items-center justify-between">
+          <span className="text-[11px] font-semibold text-gray-700">Strength</span>
+          <span className={`text-[11px] font-bold ${strength.color}`}>{strength.text}</span>
         </div>
       )}
 
-      <div className="space-y-2">
+      <div className="grid grid-cols-2 gap-x-2 gap-y-1">
         {rules.map((rule) => (
-          <div
-            key={rule.label}
-            className="flex items-center gap-2"
-          >
+          <div key={rule.label} className="flex items-center gap-1.5">
             {rule.valid ? (
-              <CheckCircle2
-                size={18}
-                className="text-green-500"
-              />
+              <CheckCircle2 size={13} className="text-purple-500 shrink-0" />
             ) : (
-              <Circle
-                size={18}
-                className="text-gray-300"
-              />
+              <Circle size={13} className="text-gray-300 shrink-0" />
             )}
-
-            <span
-              className={`text-sm ${
-                rule.valid
-                  ? "text-green-700"
-                  : "text-gray-500"
-              }`}
-            >
+            <span className={`text-[10px] ${rule.valid ? "font-medium text-purple-700" : "text-gray-400"}`}>
               {rule.label}
             </span>
           </div>
