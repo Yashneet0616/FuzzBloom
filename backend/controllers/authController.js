@@ -53,6 +53,13 @@ async function getProfile(req, res) {
   } catch (error) {
     console.error("Profile Error:", error);
 
+    if (error.message === "User not found.") {
+      return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: error.message,

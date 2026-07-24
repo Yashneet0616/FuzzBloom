@@ -5,7 +5,7 @@ import {
   Upload,
   Loader2,
 } from 'lucide-react'
-import { uploadImage } from '../../../services/cloudinaryService'
+import { uploadImage } from '../../../services/shared/cloudinaryService'
 
 function AppearanceSettings({
   settings,

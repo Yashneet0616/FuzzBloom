@@ -1,6 +1,6 @@
-import ProductGrid from '../../components/shop/ProductGrid'
-import ShopFilters from '../../components/shop/ShopFilters'
-import SectionTitle from '../../components/ui/SectionTitle'
+import ProductGrid from '../../components/customer/shop/ProductGrid'
+import ShopFilters from '../../components/customer/shop/ShopFilters'
+import SectionTitle from '../../components/shared/ui/SectionTitle'
 
 function Shop() {
   return (

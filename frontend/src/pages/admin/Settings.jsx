@@ -7,10 +7,7 @@ import PolicySettings from '../../components/admin/settings/PolicySettings'
 import AccountSettings from '../../components/admin/settings/AccountSettings'
 import SaveSettings from '../../components/admin/settings/SaveSettings'
 
-import {
-  getSettings,
-  saveSettings,
-} from '../../services/settingsService'
+import { getSettings, saveSettings } from "../../services/admin/settingsService";
 
 function Settings() {
   const [settings, setSettings] = useState(null)

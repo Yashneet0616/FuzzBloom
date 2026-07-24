@@ -14,14 +14,17 @@ function ProtectedRoute({ children }) {
     );
   }
 
+  // Not logged in → Go to the single login page
   if (!user) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
+  // Logged in but not an admin
   if (!profile || profile.role !== "admin") {
     return <Navigate to="/" replace />;
   }
 
+  // Logged in as admin
   return children;
 }
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Pencil, Trash2 } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import { getProducts, deleteProduct } from '../../services/productService'
+import Button from '../../components/shared/ui/Button'
+import { getProducts, deleteProduct } from "../../services/admin/productService";
 
 function Products() {
   const [products, setProducts] = useState([])

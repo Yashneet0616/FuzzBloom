@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
-import ProductForm from '../../components/admin/ProductForm'
-import { addProduct } from '../../services/productService'
-import { uploadImage } from '../../services/cloudinaryService'
+import ProductForm from "../../components/admin/products/ProductForm";
+import { addProduct } from "../../services/admin/productService";
+import { uploadImage } from '../../services/shared/cloudinaryService'
 
 function AddProduct() {
   const navigate = useNavigate()

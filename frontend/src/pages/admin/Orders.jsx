@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 import {
   getOrders,
   updateOrderStatus,
-} from '../../services/adminOrderService'
+} from "../../services/admin/adminOrderService";
 
 function Orders() {
   const [orders, setOrders] = useState([])

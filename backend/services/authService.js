@@ -11,18 +11,21 @@ async function registerUser(uid, data) {
 
   const snapshot = await userRef.get();
 
+  // Existing user
   if (snapshot.exists) {
     return snapshot.data();
   }
 
+  // New customer
   const user = {
     uid,
     firstName: data.firstName || "",
     lastName: data.lastName || "",
     phone: data.phone || "",
     email: data.email || "",
-    role: "USER",
+    role: "customer",
     createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
   };
 
   await userRef.set(user);
@@ -36,25 +39,15 @@ async function registerUser(uid, data) {
 // Get Profile
 // ===============================
 async function getProfile(uid) {
-  console.log("==================================");
-  console.log("GET PROFILE");
-  console.log("UID:", uid);
-
   const userRef = db.collection("users").doc(uid);
 
   const snapshot = await userRef.get();
 
-  console.log("Document Exists:", snapshot.exists);
-
-  if (snapshot.exists) {
-    console.log("User Data:", snapshot.data());
-    console.log("==================================");
-    return snapshot.data();
+  if (!snapshot.exists) {
+    throw new Error("User not found.");
   }
 
-  console.log("==================================");
-
-  throw new Error("User not found.");
+  return snapshot.data();
 }
 
 // ===============================
@@ -67,6 +60,7 @@ async function updateProfile(uid, data) {
     firstName: data.firstName,
     lastName: data.lastName,
     phone: data.phone,
+    updatedAt: FieldValue.serverTimestamp(),
   });
 
   const snapshot = await userRef.get();

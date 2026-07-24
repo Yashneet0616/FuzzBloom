@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Button from '../../components/ui/Button'
-import { login } from '../../services/authService'
+import Button from '../../components/shared/ui/Button'
+import { login } from '../../services/auth/authService'
 
 function Login() {
   const navigate = useNavigate()

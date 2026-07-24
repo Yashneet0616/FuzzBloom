@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import Button from '../../components/ui/Button'
+import Button from '../../components/shared/ui/Button'
 import { useCart } from '../../context/CartContext'
 
 function Cart() {

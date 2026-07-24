@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Loader2, Mail } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { resetPassword } from '../../services/authService'
+import { resetPassword } from '../../services/auth/authService'
 
 function ForgotPassword() {
   const [loading, setLoading] = useState(false)

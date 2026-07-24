@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import Button from '../../components/ui/Button'
+import Button from '../../components/shared/ui/Button'
 import { useCart } from '../../context/CartContext'
-import { getProductById } from '../../services/customerProductService'  
+import { getProductById } from '../../services/customer/customerProductService'  
 
 function ProductDetails() {
   const { id } = useParams()

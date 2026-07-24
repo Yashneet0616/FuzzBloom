@@ -3,43 +3,44 @@ import {
   Routes,
   Route,
   Navigate,
-} from 'react-router-dom'
+} from "react-router-dom";
 
-import MainLayout from '../layouts/MainLayout'
-import AdminLayout from '../layouts/AdminLayout'
-import ProtectedRoute from './ProtectedRoute'
-import CustomerProtectedRoute from './CustomerProtectedRoute'
+import MainLayout from "../layouts/MainLayout";
+import AdminLayout from "../layouts/AdminLayout";
+import ProtectedRoute from "./ProtectedRoute";
+import CustomerProtectedRoute from "./CustomerProtectedRoute";
+
 
 /* Customer Pages */
-import Home from '../pages/customer/Home'
-import Shop from '../pages/customer/Shop'
-import ProductDetails from '../pages/customer/ProductDetails'
-import Cart from '../pages/customer/Cart'
-import Checkout from '../pages/customer/Checkout'
-import OrderSuccess from '../pages/customer/OrderSuccess'
-import About from '../pages/customer/About'
-import Contact from '../pages/customer/Contact'
+import Home from "../pages/customer/Home";
+import Shop from "../pages/customer/Shop";
+import ProductDetails from "../pages/customer/ProductDetails";
+import Cart from "../pages/customer/Cart";
+import Checkout from "../pages/customer/Checkout";
+import OrderSuccess from "../pages/customer/OrderSuccess";
+import About from "../pages/customer/About";
+import Contact from "../pages/customer/Contact";
+import CustomOrders from "../pages/customer/CustomOrders";
 
 /* Customer Authentication */
-import Login from '../pages/auth/Login'
-import Signup from '../pages/auth/Signup'
-import ForgotPassword from '../pages/auth/ForgotPassword'
+import Auth from "../pages/auth/Auth";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
 
 /* Account Pages */
-import AccountDashboard from '../pages/account/Dashboard'
-import Profile from '../pages/account/Profile'
-import Addresses from '../pages/account/Addresses'
-import OrdersHistory from '../pages/account/Orders'
+import AccountDashboard from "../pages/customer/account/Dashboard";
+import Profile from "../pages/customer/account/Profile";
+import Addresses from "../pages/customer/account/Addresses";
+import OrdersHistory from "../pages/customer/account/Orders";
 
 /* Admin Pages */
-import AdminLogin from '../pages/admin/Login'
-import Dashboard from '../pages/admin/Dashboard'
-import Products from '../pages/admin/Products'
-import AddProduct from '../pages/admin/AddProduct'
-import EditProduct from '../pages/admin/EditProduct'
-import Orders from '../pages/admin/Orders'
-import Analytics from '../pages/admin/Analytics'
-import Settings from '../pages/admin/Settings'
+import Dashboard from "../pages/admin/Dashboard";
+import Products from "../pages/admin/Products";
+import AddProduct from "../pages/admin/AddProduct";
+import EditProduct from "../pages/admin/EditProduct";
+import Orders from "../pages/admin/Orders";
+import Analytics from "../pages/admin/Analytics";
+import Settings from "../pages/admin/Settings";
 
 function AppRoutes() {
   return (
@@ -113,22 +114,18 @@ function AppRoutes() {
           />
         </Route>
 
-        {/* Customer Auth */}
+        {/* Authentication */}
 
-        <Route path="/login" element={<Login />} />
-
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/auth" element={<Auth />} />
 
         <Route
           path="/forgot-password"
           element={<ForgotPassword />}
         />
 
-        {/* Admin Login */}
-
         <Route
-          path="/admin/login"
-          element={<AdminLogin />}
+          path="/reset-password"
+          element={<ResetPassword />}
         />
 
         {/* Admin */}
@@ -182,6 +179,8 @@ function AppRoutes() {
           />
         </Route>
 
+        <Route path="/custom-orders" element={<CustomOrders />} />
+
         {/* 404 */}
 
         <Route
@@ -190,7 +189,7 @@ function AppRoutes() {
         />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default AppRoutes
+export default AppRoutes;

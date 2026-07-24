@@ -10,8 +10,8 @@ import {
   Calendar,
 } from 'lucide-react'
 
-import { getOrders } from '../../services/adminOrderService'
-import { getProducts } from '../../services/productService'
+import { getOrders } from "../../services/admin/adminOrderService";
+import { getProducts } from "../../services/admin/productService";
 
 function Analytics() {
   const [orders, setOrders] = useState([])

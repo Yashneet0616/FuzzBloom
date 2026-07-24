@@ -1,7 +1,7 @@
-import Hero from '../../components/home/Hero'
-import Categories from '../../components/home/Categories'
-import FeaturedProducts from '../../components/home/FeaturedProducts'
-import WhyChooseUs from '../../components/home/WhyChooseUs'
+import Hero from '../../components/customer/home/Hero'
+import Categories from '../../components/customer/home/Categories'
+import FeaturedProducts from '../../components/customer/home/FeaturedProducts'
+import WhyChooseUs from '../../components/customer/home/WhyChooseUs'
 
 function Home() {
   return (

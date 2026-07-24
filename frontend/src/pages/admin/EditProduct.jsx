@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
-import ProductForm from '../../components/admin/ProductForm'
+import ProductForm from "../../components/admin/products/ProductForm";
 import {
   getProductById,
   updateProduct,
-} from '../../services/productService'
-import { uploadImage } from '../../services/cloudinaryService'
+} from "../../services/admin/productService";
+import { uploadImage } from '../../services/shared/cloudinaryService'
 
 function EditProduct() {
   const { id } = useParams()

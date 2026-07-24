@@ -29,7 +29,7 @@ router.post("/", authMiddleware, async (req, res) => {
       });
     }
 
-    // Verify Razorpay signature
+    // Verify Razorpay Signature
     const body = `${razorpay_order_id}|${razorpay_payment_id}`;
 
     const expectedSignature = crypto
@@ -58,7 +58,7 @@ router.post("/", authMiddleware, async (req, res) => {
       });
     }
 
-    // Recalculate prices from Firestore
+    // Validate Products & Calculate Total
     const validatedItems = [];
     let total = 0;
 
@@ -100,11 +100,81 @@ router.post("/", authMiddleware, async (req, res) => {
       total += quantity * price;
     }
 
-    // Create Firestore Order
+    // ----------------------------------
+    // Update User Profile
+    // ----------------------------------
+
+    const userRef = db.collection("users").doc(req.user.uid);
+
+    await userRef.set(
+      {
+        phone: customer.phone,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    // ----------------------------------
+    // Auto Save Address
+    // ----------------------------------
+
+    const addressCollection = userRef.collection("addresses");
+
+    const existingAddresses = await addressCollection.get();
+
+    const duplicateAddress = existingAddresses.docs.find((doc) => {
+      const data = doc.data();
+
+      return (
+        data.fullName === customer.fullName &&
+        data.phone === customer.phone &&
+        data.addressLine1 === customer.addressLine1 &&
+        (data.addressLine2 || "") ===
+          (customer.addressLine2 || "") &&
+        data.city === customer.city &&
+        data.state === customer.state &&
+        data.pincode === customer.pincode &&
+        data.country === customer.country
+      );
+    });
+
+    if (!duplicateAddress) {
+      const isFirstAddress = existingAddresses.empty;
+
+      await addressCollection.add({
+        label: "Home",
+
+        fullName: customer.fullName,
+
+        phone: customer.phone,
+
+        addressLine1: customer.addressLine1,
+
+        addressLine2: customer.addressLine2 || "",
+
+        city: customer.city,
+
+        state: customer.state,
+
+        pincode: customer.pincode,
+
+        country: customer.country,
+
+        isDefault: isFirstAddress,
+
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
+
+    // Generate ONE Order Number
+    const orderNumber = generateOrderNumber();
+
+    // Create Order
     const orderRef = await db.collection("orders").add({
       uid: req.user.uid,
 
-      orderNumber: generateOrderNumber(),
+      orderNumber,
 
       customer,
 
@@ -130,10 +200,9 @@ router.post("/", authMiddleware, async (req, res) => {
     return res.status(200).json({
       success: true,
       orderId: orderRef.id,
-      orderNumber: generateOrderNumber(),
+      orderNumber,
       total,
     });
-
   } catch (error) {
     console.error("Verify Payment Error:", error);
 
