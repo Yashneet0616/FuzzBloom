@@ -1,26 +1,18 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, ShoppingBag, User, LogOut, ChevronDown, Menu, X } from 'lucide-react'
+import { Search, ShoppingBag, User, LogOut, Menu, X } from 'lucide-react'
 
 import { useCart } from '../../../context/CartContext'
 import useAuth from '../../../hooks/useAuth'
 import { logout } from '../../../services/auth/authService'
 
-// Navigation data
+// Navigation data with Collections redirected to the shop/products page
 const navigationLinks = [
-  { label: 'Collections', to: '/collections' },
+  { label: 'Collections', to: '/shop' },
   { label: 'Custom Orders', to: '/custom-orders' },
   { label: 'About Us', to: '/about' },
   { label: 'Contact', to: '/contact' },
-]
-
-const shopCategories = [
-  { label: 'All Products', desc: 'Browse entire collection', to: '/shop' },
-  { label: 'Bouquets', desc: 'Most Popular', to: '/shop?category=bouquets' },
-  { label: 'Flowers', desc: 'Single Stems', to: '/shop?category=flowers' },
-  { label: 'Keychains', desc: 'Cute Gifts', to: '/shop?category=keychains' },
-  { label: 'Decor & More', desc: 'Home Decor', to: '/shop?category=decor' },
 ]
 
 const announcementMessages = [
@@ -36,14 +28,11 @@ function Navbar() {
   const { cartItems } = useCart()
   const { user } = useAuth()
 
-  const [shopOpen, setShopOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0)
-
-  const dropdownTimeout = useRef(null)
 
   async function handleLogout() {
     try {
@@ -87,7 +76,6 @@ function Navbar() {
       if (e.key === 'Escape') {
         setSearchOpen(false)
         setMobileMenuOpen(false)
-        setShopOpen(false)
         setQuery('')
       }
     }
@@ -96,30 +84,7 @@ function Navbar() {
     return () => window.removeEventListener('keydown', handleEscapeKey)
   }, [])
 
-  // Cleanup dropdown timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (dropdownTimeout.current) {
-        clearTimeout(dropdownTimeout.current)
-      }
-    }
-  }, [])
-
-  const handleShopMouseEnter = () => {
-    if (dropdownTimeout.current) {
-      clearTimeout(dropdownTimeout.current)
-    }
-    setShopOpen(true)
-  }
-
-  const handleShopMouseLeave = () => {
-    dropdownTimeout.current = setTimeout(() => {
-      setShopOpen(false)
-    }, 150)
-  }
-
   const handleMobileMenuToggle = () => {
-    setShopOpen(false)
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
@@ -154,10 +119,10 @@ function Navbar() {
             : 'bg-white/95 backdrop-blur-sm'
         }`}
       >
-        <div className="mx-auto flex h-[74px] max-w-[1320px] items-center justify-between px-8 xl:px-10">
+        <div className="mx-auto flex h-[72px] max-w-[1380px] items-center justify-between px-8 lg:px-10 xl:px-12">
           
           {/* Logo with Imported Cormorant Garamond */}
-          <NavLink to="/" className="flex shrink-0 flex-col relative transition-opacity duration-300 hover:opacity-80">
+          <NavLink to="/" className="flex shrink-0 flex-col relative transition-opacity duration-300 hover:opacity-80 mt-[2px]">
             <div className="flex items-center">
               <span
                 style={{ fontFamily: "'Cormorant Garamond', serif" }}
@@ -174,77 +139,6 @@ function Navbar() {
 
           {/* Center Navigation - Desktop */}
           <nav className="hidden items-center gap-10 lg:flex">
-            {/* Shop Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={handleShopMouseEnter}
-              onMouseLeave={handleShopMouseLeave}
-            >
-              <NavLink
-                to="/shop"
-                className={({ isActive }) =>
-                  `relative text-[15px] font-medium transition-colors duration-300 group flex items-center gap-1 py-2 ${
-                    isActive ? 'text-black' : 'text-neutral-800 hover:text-[#c98bef]'
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    Shop
-                    <ChevronDown
-                      size={14}
-                      className="transition-transform duration-300 group-hover:rotate-180"
-                    />
-                    <span className="absolute left-0 -bottom-1 w-full flex items-center justify-center pointer-events-none">
-                      <motion.span
-                        initial={false}
-                        animate={{ scaleX: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
-                        className="h-0.5 bg-[#d48be9] w-full origin-center"
-                        transition={{ duration: 0.3 }}
-                      />
-                    </span>
-                  </>
-                )}
-              </NavLink>
-
-              <AnimatePresence>
-                {shopOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 12 }}
-                    transition={{ duration: 0.18 }}
-                    className="absolute left-0 top-12 w-64 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_25px_60px_rgba(0,0,0,.12)] py-2"
-                    onMouseEnter={handleShopMouseEnter}
-                    onMouseLeave={handleShopMouseLeave}
-                  >
-                    <div className="px-5 pt-2 pb-1 text-xs font-semibold uppercase tracking-[0.1em] text-neutral-400">
-                      Shop
-                    </div>
-                    <div className="mx-4 my-2 h-[1px] bg-neutral-100" />
-                    {shopCategories.map((category) => (
-                      <NavLink
-                        key={category.to}
-                        to={category.to}
-                        onClick={() => setShopOpen(false)}
-                        className="flex flex-col px-5 py-2.5 transition-colors hover:bg-purple-50/70"
-                      >
-                        <span className="text-sm font-semibold text-neutral-800 hover:text-purple-600">
-                          {category.label}
-                        </span>
-                        {category.desc && (
-                          <span className="text-[11px] font-medium text-neutral-400">
-                            {category.desc}
-                          </span>
-                        )}
-                      </NavLink>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Desktop Navigation Links */}
             {navigationLinks.map((link) => (
               <NavLink
                 key={link.to}
@@ -354,32 +248,8 @@ function Navbar() {
             transition={{ duration: 0.2 }}
             className="lg:hidden border-b border-gray-100 bg-white/95 backdrop-blur-lg"
           >
-            <div className="mx-auto max-w-[1320px] px-8 py-6">
+            <div className="mx-auto max-w-[1380px] px-8 lg:px-10 xl:px-12 py-6">
               <nav className="flex flex-col gap-6">
-                <div>
-                  <NavLink
-                    to="/shop"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-[15px] font-medium text-neutral-800 hover:text-[#c98bef] transition-colors block mb-4"
-                  >
-                    Shop
-                  </NavLink>
-
-                  <div className="pl-4 flex flex-col gap-3 border-l border-gray-200">
-                    {shopCategories.slice(1).map((category) => (
-                      <NavLink
-                        key={category.to}
-                        to={category.to}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="text-sm font-medium text-neutral-700 hover:text-[#c98bef] transition-colors flex flex-col"
-                      >
-                        <span>{category.label}</span>
-                        <span className="text-[11px] text-neutral-400">{category.desc}</span>
-                      </NavLink>
-                    ))}
-                  </div>
-                </div>
-
                 {navigationLinks.map((link) => (
                   <NavLink
                     key={link.to}

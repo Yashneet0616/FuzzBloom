@@ -2,34 +2,43 @@ import { motion } from "framer-motion";
 import { ArrowRight, Heart, Leaf, Gift, HeartHandshake } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+// Categories configuration with flatter radii, gradients, and custom positioning
 const categories = [
   {
     title: "BOUQUETS",
     subtitle: "make their day 💜",
-    color: "from-[#f2ddff] to-[#e9caff]",
-    emoji: "💐",
-    span: "sm:row-span-2", // tall
+    image: "/images/bouquets.png",
+    to: "/shop?category=bouquets",
+    bgGradient: "bg-[linear-gradient(135deg,#efe1fb_0%,#ead8fb_45%,#f5eefe_100%)]",
+    radius: "rounded-[42px_46px_44px_48px]", // 1. Flatter radii
+    imageClass: "h-[190px] -top-7 left-1/2 -translate-x-1/2 -rotate-3",
   },
   {
     title: "FLOWERS",
     subtitle: "little blooms, big joy",
-    color: "from-[#ffd9e6] to-[#ffe3ee]",
-    emoji: "🌷",
-    span: "", // square
+    image: "/images/flowers.png",
+    to: "/shop?category=flowers",
+    bgGradient: "bg-[linear-gradient(135deg,#ffdce8_0%,#ffd1df_45%,#ffe7ef_100%)]",
+    radius: "rounded-[46px_42px_48px_44px]", // 1. Flatter radii
+    imageClass: "h-[170px] top-0 left-1/2 -translate-x-1/2 rotate-2",
   },
   {
     title: "KEYCHAINS",
     subtitle: "carry your vibe everywhere",
-    color: "from-[#e2f4d9] to-[#eefbe6]",
-    emoji: "🧸",
-    span: "sm:col-span-2", // wide
+    image: "/images/keychains.png",
+    to: "/shop?category=keychains",
+    bgGradient: "bg-[linear-gradient(135deg,#eef7d8_0%,#e7f2d2_45%,#f5fae8_100%)]",
+    radius: "rounded-[44px_48px_42px_46px]", // 1. Flatter radii
+    imageClass: "h-[160px] top-1 left-1/2 -translate-x-1/2 -rotate-4",
   },
   {
     title: "DECOR & MORE",
     subtitle: "for your space & more",
-    color: "from-[#fff1cf] to-[#fff8e6]",
-    emoji: "🌸",
-    span: "rounded-[50%_50%_45%_55%/55%_45%_55%_45%]", // curved silhouette
+    image: "/images/decor.png",
+    to: "/shop?category=decor",
+    bgGradient: "bg-[linear-gradient(135deg,#fff3cf_0%,#ffefbf_45%,#fff7df_100%)]",
+    radius: "rounded-[48px_44px_46px_42px]", // 1. Flatter radii
+    imageClass: "h-[175px] -top-2 left-1/2 -translate-x-1/2 rotate-3",
   },
 ];
 
@@ -42,80 +51,117 @@ const features = [
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12 } },
+  show: { transition: { staggerChildren: 0.1 } },
 };
+
 const item = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
 };
+
+// Subtle floral SVG icon
+const FlowerIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path
+      d="M12 2.25a3.25 3.25 0 0 0-3.1 2.27 3.25 3.25 0 0 0-3.6 2.37 3.25 3.25 0 0 0-.25 4.28 3.25 3.25 0 0 0 .25 4.28 3.25 3.25 0 0 0 3.6 2.37 3.25 3.25 0 0 0 6.2 0 3.25 3.25 0 0 0 3.6-2.37 3.25 3.25 0 0 0 .25-4.28 3.25 3.25 0 0 0-.25-4.28 3.25 3.25 0 0 0-3.6-2.37A3.25 3.25 0 0 0 12 2.25Z"
+      opacity="0.25"
+    />
+    <circle cx="12" cy="12" r="3" fill="currentColor" />
+  </svg>
+);
 
 const Categories = () => {
   return (
-    <section className="relative overflow-hidden bg-[#faf7ff] py-24">
-      {/* Background decorations */}
-      <div className="absolute -right-16 top-10 h-64 w-64 rounded-full bg-[#f3e4ff] blur-3xl opacity-70" />
-      <div className="absolute -left-10 bottom-0 h-56 w-56 rounded-full bg-[#fdeaf5] blur-3xl opacity-60" />
-      <span className="absolute left-[6%] top-[10%] text-lg text-[#d9b8f2] opacity-60">✦</span>
-      <span className="absolute right-[10%] bottom-[8%] text-xl text-[#f2b8d9] opacity-50">✿</span>
+    <section className="relative overflow-hidden bg-white py-20">
+      {/* Background ambient glow */}
+      <div className="absolute -right-16 top-10 h-64 w-64 rounded-full bg-[#f3e4ff] blur-3xl opacity-40 pointer-events-none" />
+      <div className="absolute -left-10 bottom-0 h-56 w-56 rounded-full bg-[#fdeaf5] blur-3xl opacity-30 pointer-events-none" />
 
-      <div className="relative mx-auto max-w-[1380px] px-6 lg:px-8 xl:px-10">
-        {/* Heading */}
-        <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      {/* Main Container */}
+      <div className="relative mx-auto max-w-[1360px] px-6 lg:px-8 xl:px-10">
+        
+        {/* Heading Section */}
+        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-gray-500">
+            <p className="mb-0 font-serif italic text-sm tracking-wide text-gray-500">
               what's your
             </p>
-            <h2 className="mt-2 text-4xl font-black text-black lg:text-5xl">
-              <span className="relative inline-block">
+            <h2 className="mt-0.5 flex items-center gap-1 text-3xl lg:text-4xl">
+              <span className="relative inline-block font-black text-black">
                 pick
-                <span className="absolute -bottom-1 left-0 h-2 w-full -rotate-1 rounded-full bg-[#e3c8ff]/70" />
+                <svg
+                  className="absolute -bottom-2 left-0 w-full h-3 text-[#d19bf1] opacity-70"
+                  viewBox="0 0 100 20"
+                  preserveAspectRatio="none"
+                  fill="none"
+                >
+                  <path
+                    d="M3,14 Q50,4 97,11"
+                    stroke="currentColor"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </span>{" "}
-              <span className="relative">today?</span> 🌸
+              <span className="font-extrabold text-black/90">today?</span>
+              <FlowerIcon className="inline-block h-5 w-5 text-[#d19bf1] ml-0.5" />
             </h2>
-            <p className="mt-3 max-w-md text-sm text-gray-500">
-              Handpicked collections, made just for you.
-            </p>
           </div>
 
           <NavLink
             to="/shop"
-            className="group inline-flex items-center gap-2 font-semibold text-black"
+            className="group inline-flex items-center gap-1 text-[13px] font-normal text-black transition-opacity hover:opacity-75"
           >
             View all
-            <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+            <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
           </NavLink>
         </div>
 
-        {/* Bento-style Category Cards — staggered reveal */}
+        {/* Categories Grid */}
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid auto-rows-[220px] gap-6 sm:grid-cols-4"
+          className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
         >
           {categories.map((category) => (
-            <motion.div key={category.title} variants={item} className={`group ${category.span}`}>
+            <motion.div key={category.title} variants={item}>
               <NavLink
-                to="/shop"
-                className={`relative flex h-full flex-col justify-end overflow-hidden rounded-3xl bg-gradient-to-br p-5 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:rotate-1 hover:shadow-[0_25px_60px_rgba(141,95,211,0.25)] ${category.color}`}
+                to={category.to}
+                /* 2. Soft inner highlight overlay via before pseudo-element
+                   3. Soft lavender hover shadow
+                   Optional Polish: transition-transform duration-500 ease-out */
+                className={`group relative flex h-[220px] flex-col justify-end px-6 pb-5 overflow-hidden 
+                  transition-transform duration-500 ease-out hover:-translate-y-1 
+                  hover:shadow-[0_18px_40px_rgba(147,112,219,0.10)]
+                  before:absolute before:inset-0 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/25 before:to-transparent before:pointer-events-none
+                  ${category.bgGradient} ${category.radius}`}
               >
-                {/* Product image placeholder — replace with real category photo */}
-                <span className="absolute inset-x-0 top-6 text-center text-6xl transition-transform duration-500 group-hover:scale-125">
-                  {category.emoji}
-                </span>
+                {/* Floating Product Image Cutout - Optional Polish: group-hover:scale-[1.03] with 500ms duration */}
+                <img
+                  src={category.image}
+                  alt={category.title}
+                  className={`absolute object-contain pointer-events-none drop-shadow-[0_8px_12px_rgba(0,0,0,.08)] transition-transform duration-500 ease-out group-hover:scale-[1.03] ${category.imageClass}`}
+                />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/0 via-black/0 to-black/0 transition-colors duration-300 group-hover:from-black/10" />
-
-                <div className="relative z-10">
-                  <h3 className="text-sm font-extrabold tracking-wide text-black">
+                {/* Bottom Card Title & Subtitle */}
+                <div className="relative z-10 max-w-[70%] pointer-events-none">
+                  <h3 className="text-[12px] font-extrabold tracking-[0.12em] text-black uppercase">
                     {category.title}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-700">{category.subtitle}</p>
+                  <p className="mt-0.5 text-[11px] font-medium leading-4 text-gray-600">
+                    {category.subtitle}
+                  </p>
                 </div>
 
-                <div className="absolute bottom-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-black text-white shadow-md transition-all duration-300 group-hover:translate-x-1 group-hover:scale-110 group-hover:shadow-lg">
-                  <ArrowRight size={16} />
+                {/* 4. Arrow Action Icon (Fixed button container, animated arrow icon) */}
+                <div className="absolute bottom-4 right-4 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-black text-white shadow-sm">
+                  <ArrowRight
+                    size={13}
+                    strokeWidth={2.5}
+                    className="transition-transform duration-300 group-hover:translate-x-0.5"
+                  />
                 </div>
               </NavLink>
             </motion.div>
@@ -124,19 +170,22 @@ const Categories = () => {
 
         {/* Features Strip */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-14 grid grid-cols-2 divide-y divide-[#f0e5fc] rounded-3xl border border-[#f0e5fc] bg-white/60 backdrop-blur-sm lg:grid-cols-4 lg:divide-y-0 lg:divide-x"
+          className="mt-14 grid grid-cols-2 divide-y divide-gray-200 border-t border-b border-gray-200 lg:grid-cols-4 lg:divide-y-0 lg:divide-x"
         >
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <div key={feature.title} className="flex items-center gap-5 px-7 py-8">
-                <Icon size={28} strokeWidth={1.5} className="shrink-0 text-black" />
+              /* 5. Increased padding to py-10 for breathing room */
+              <div key={feature.title} className="flex items-center gap-5 px-8 py-10">
+                <Icon size={32} strokeWidth={1} className="shrink-0 text-black" />
                 <div>
-                  <p className="text-sm font-bold text-black">{feature.title}</p>
-                  <p className="mt-0.5 text-xs leading-5 text-gray-500">{feature.description}</p>
+                  <p className="text-[13px] font-extrabold text-black">{feature.title}</p>
+                  <p className="mt-0.5 text-[12px] text-gray-500 leading-tight">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             );

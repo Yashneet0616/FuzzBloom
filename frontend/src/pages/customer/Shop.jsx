@@ -22,15 +22,47 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
 }
 
+// Helper to safely parse dates/timestamps for sorting
+const getTime = (value) => {
+  if (!value) return 0
+
+  if (typeof value?._seconds === 'number') {
+    return value._seconds * 1000
+  }
+  if (typeof value?.seconds === 'number') {
+    return value.seconds * 1000
+  }
+
+  // Handle ISO strings, numbers, or Date instances
+  return new Date(value).getTime()
+}
+
 function Shop() {
   const { products, loading } = useProduct()
   const [searchParams, setSearchParams] = useSearchParams()
 
+  // Dynamically calculate the maximum price (safely handling string prices too)
+  const highestPrice = useMemo(() => {
+    if (!products || products.length === 0) return 1299
+    const max = Math.max(...products.map((p) => Number(p.price) || 0))
+    return max > 0 ? max : 1299
+  }, [products])
+
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || 'all',
-    maxPrice: 1299,
+    maxPrice: null, // Initialized once highestPrice is ready
     searchQuery: '',
   })
+
+  // Initialize slider maxPrice once without overriding user's manual adjustments
+  useEffect(() => {
+    if (filters.maxPrice === null) {
+      setFilters((prev) => ({
+        ...prev,
+        maxPrice: highestPrice,
+      }))
+    }
+  }, [highestPrice, filters.maxPrice])
 
   const [sortBy, setSortBy] = useState('newest')
 
@@ -48,7 +80,7 @@ function Shop() {
   const clearFilters = () => {
     setFilters({
       category: 'all',
-      maxPrice: 1299,
+      maxPrice: highestPrice,
       searchQuery: '',
     })
   }
@@ -57,43 +89,71 @@ function Shop() {
   const filteredProducts = useMemo(() => {
     let result = [...products]
 
-    // Category Filter
+    // Category Filter (safer property check)
     if (filters.category !== 'all') {
       result = result.filter(
-        (p) => p.category?.toLowerCase() === filters.category.toLowerCase()
+        (p) => (p.category || '').toLowerCase() === filters.category.toLowerCase()
       )
     }
 
-    // Search Filter
+    // Search Filter (optimized with lowercase variable caching)
     if (filters.searchQuery.trim() !== '') {
       const q = filters.searchQuery.toLowerCase()
-      result = result.filter(
-        (p) => p.name?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q)
-      )
+      result = result.filter((p) => {
+        const name = (p.name || '').toLowerCase()
+        const description = (p.description || '').toLowerCase()
+        const category = (p.category || '').toLowerCase()
+
+        return (
+          name.includes(q) ||
+          description.includes(q) ||
+          category.includes(q)
+        )
+      })
     }
 
     // Price Filter
-    result = result.filter((p) => (p.price ?? 0) <= filters.maxPrice)
+    const currentMaxPrice = filters.maxPrice ?? highestPrice
+    result = result.filter(
+      (p) => (Number(p.price) || 0) <= currentMaxPrice
+    )
 
-    // Sorting
+    // Sorting Logic
     switch (sortBy) {
-      case 'price-asc':
-        result.sort((a, b) => (a.price ?? 0) - (b.price ?? 0))
-        break
-      case 'price-desc':
-        result.sort((a, b) => (b.price ?? 0) - (a.price ?? 0))
-        break
-      case 'name-asc':
-        result.sort((a, b) => a.name.localeCompare(b.name))
-        break
       case 'newest':
+        result.sort((a, b) => getTime(b.createdAt) - getTime(a.createdAt))
+        break
+
+      case 'oldest':
+        result.sort((a, b) => getTime(a.createdAt) - getTime(b.createdAt))
+        break
+
+      case 'price-asc':
+        result.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0))
+        break
+
+      case 'price-desc':
+        result.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0))
+        break
+
+      case 'name-asc':
+        result.sort((a, b) =>
+          (a.name || '').localeCompare(b.name || '')
+        )
+        break
+
+      case 'name-desc':
+        result.sort((a, b) =>
+          (b.name || '').localeCompare(a.name || '')
+        )
+        break
+
       default:
-        // Safely breaking without assuming createdAt exists yet
         break
     }
 
     return result
-  }, [products, filters, sortBy])
+  }, [products, filters, sortBy, highestPrice])
 
   useEffect(() => {
     document.title = 'Shop | FuzzBloom'
@@ -130,7 +190,7 @@ function Shop() {
             <div className="relative flex-1 sm:w-64">
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search products or categories..."
                 value={filters.searchQuery}
                 onChange={(e) => setFilters((prev) => ({ ...prev, searchQuery: e.target.value }))}
                 className="w-full rounded-full border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm font-medium text-gray-700 outline-none transition-colors hover:border-[#c98bef] focus:border-[#c98bef] focus:bg-white focus:ring-1 focus:ring-[#c98bef]"
@@ -145,10 +205,12 @@ function Shop() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full appearance-none rounded-full border border-gray-200 bg-white py-2.5 pl-4 pr-10 text-sm font-semibold text-gray-700 outline-none transition-colors hover:border-[#c98bef] focus:border-[#c98bef] focus:ring-1 focus:ring-[#c98bef]"
               >
-                <option value="newest">Sort by: Newest</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
                 <option value="price-asc">Price: Low to High</option>
                 <option value="price-desc">Price: High to Low</option>
-                <option value="name-asc">Alphabetical: A-Z</option>
+                <option value="name-asc">Name: A–Z</option>
+                <option value="name-desc">Name: Z–A</option>
               </select>
               <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" />
             </div>
@@ -193,7 +255,7 @@ function Shop() {
               >
                 <AnimatePresence>
                   {filteredProducts.map((product) => (
-                    <motion.div key={product._id || product.id} variants={itemVariants} layout>
+                    <motion.div key={product.id} variants={itemVariants} layout>
                       <ProductCard product={product} />
                     </motion.div>
                   ))}
