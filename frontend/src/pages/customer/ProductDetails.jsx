@@ -2,22 +2,40 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Button from '../../components/shared/ui/Button'
 import { useCart } from '../../context/CartContext'
-import { getProductById } from '../../services/customer/customerProductService'  
+import { getProductById } from '../../services/customer/customerProductService'
 
 function ProductDetails() {
   const { id } = useParams()
   const { addToCart } = useCart()
 
-  const [product, setProduct] = useState(null)        
+  const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Scroll to top on id change
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [id])
+
+  // Set page title when product loads and reset on unmount
+  useEffect(() => {
+    if (!product) return
+
+    document.title = `${product.name} | FuzzBloom`
+
+    return () => {
+      document.title = 'FuzzBloom'
+    }
+  }, [product])
 
   useEffect(() => {
     async function loadProduct() {
       try {
         const data = await getProductById(id)
         setProduct(data)
-      } catch (error) {
-        console.error(error)
+      } catch (err) {
+        console.error(err)
+        setError('Failed to load product.')
       } finally {
         setLoading(false)
       }
@@ -36,6 +54,14 @@ function ProductDetails() {
     )
   }
 
+  if (error) {
+    return (
+      <section className="bg-rose-50 py-20 text-center">
+        <h1 className="text-3xl font-bold">{error}</h1>
+      </section>
+    )
+  }
+
   if (!product) {
     return (
       <section className="bg-rose-50 py-20 text-center">
@@ -46,15 +72,23 @@ function ProductDetails() {
     )
   }
 
+  const image =
+    product.images?.[0]?.url ??
+    product.images?.[0] ??
+    product.image ??
+    '/placeholder-product.png'
+
+  const formattedPrice = new Intl.NumberFormat('en-IN').format(product.price ?? 0)
+
   return (
     <section className="bg-rose-50 py-20">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2">
 
         <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
           <img
-            src={product.image}
+            src={image}
             alt={product.name}
-            className="w-full object-cover"
+            className="aspect-square w-full object-cover"
           />
         </div>
 
@@ -72,7 +106,7 @@ function ProductDetails() {
           </h1>
 
           <p className="mb-6 text-3xl font-bold text-rose-500">
-            ₹{product.price}
+            ₹{formattedPrice}
           </p>
 
           <p className="mb-10 leading-8 text-stone-600">

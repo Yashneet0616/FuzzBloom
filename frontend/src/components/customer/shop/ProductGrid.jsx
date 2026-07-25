@@ -1,5 +1,5 @@
       import ProductCard from '../../admin/products/ProductCard'
-      import useProducts from '../../../hooks/useCustomerProducts.js'
+      import useProducts from '../../../hooks/useProducts.js'
 
       function ProductGrid() {
         const { products, loading, error } = useProducts()

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
+import { Mail, Lock, Loader2, ArrowRight, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 import AuthInput from "./AuthInput";
@@ -13,6 +13,7 @@ function LoginSection() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [customError, setCustomError] = useState("");
 
   const {
     register,
@@ -32,11 +33,12 @@ function LoginSection() {
   async function onSubmit(data) {
     try {
       setLoading(true);
+      setCustomError("");
       await login(data.email.trim(), data.password);
       await redirectUser();
       toast.success("Welcome back 🌸");
     } catch (error) {
-      toast.error(error.message || "Login failed.");
+      setCustomError("Invalid email or password. Please check your credentials and try again.");
     } finally {
       setLoading(false);
     }
@@ -45,18 +47,28 @@ function LoginSection() {
   async function handleGoogleLogin() {
     try {
       setGoogleLoading(true);
+      setCustomError("");
       await loginWithGoogle();
       await redirectUser();
       toast.success("Logged in successfully.");
     } catch (error) {
-      toast.error(error.message || "Google Sign-In failed.");
+      setCustomError("Google sign-in failed. Please try again.");
     } finally {
       setGoogleLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+      {customError && (
+        <div className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700 shadow-sm animate-fadeIn">
+          <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-500" />
+          <div className="flex-1 font-medium">
+            {customError}
+          </div>
+        </div>
+      )}
+
       <AuthInput
         label="Email Address"
         type="email"
@@ -97,54 +109,44 @@ function LoginSection() {
       <button
         type="submit"
         disabled={loading || googleLoading}
-        className="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-[#D8B4E2] text-sm font-bold text-white transition-transform duration-200 hover:bg-[#cd9fe0] active:scale-[0.99] disabled:opacity-60"
+        className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#D8B4E2] text-xs font-bold text-white transition-transform duration-200 hover:bg-[#cd9fe0] active:scale-[0.99] disabled:opacity-60"
       >
         {loading ? (
           <>
-            <Loader2 className="animate-spin" size={18} />
+            <Loader2 className="animate-spin" size={16} />
             Logging in...
           </>
         ) : (
           <>
-            Login <ArrowRight size={16} />
+            Login <ArrowRight size={14} />
           </>
         )}
       </button>
 
-      <div className="relative flex items-center justify-center py-2">
+      <div className="relative flex items-center justify-center py-1">
         <div className="w-full border-t border-gray-100" />
-        <span className="absolute bg-white px-3 text-[11px] font-medium text-gray-400">
+        <span className="absolute bg-white px-2 text-[10px] font-medium text-gray-400">
           or continue with
         </span>
       </div>
 
-      <div className="space-y-2.5">
+      <div>
         <button
           type="button"
           onClick={handleGoogleLogin}
           disabled={loading || googleLoading}
-          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-2xl border border-gray-200 bg-white text-xs font-semibold text-gray-700 transition hover:bg-gray-50"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-[11px] font-semibold text-gray-700 transition hover:bg-gray-50"
         >
           <img
             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
             alt="Google"
-            className="h-4 w-4"
+            className="h-3.5 w-3.5"
           />
           Continue with Google
         </button>
-
-        <button
-          type="button"
-          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-2xl border border-gray-200 bg-white text-xs font-semibold text-gray-700 transition hover:bg-gray-50"
-        >
-          <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.32c.62-.75 1.04-1.8 0.92-2.84-.9.04-2 0.6-2.65 1.36-.58.67-1.09 1.75-.95 2.78 1.01.08 2.05-.55 2.68-1.3" />
-          </svg>
-          Continue with Apple
-        </button>
       </div>
 
-      <p className="pt-2 text-center text-[11px] text-gray-400">
+      <p className="pt-1 text-center text-[10px] text-gray-400">
         By continuing, you agree to our{" "}
         <a href="#terms" className="font-semibold text-purple-400 hover:underline">
           Terms
